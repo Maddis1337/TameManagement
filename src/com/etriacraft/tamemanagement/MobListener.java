@@ -9,8 +9,11 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -62,6 +65,20 @@ public class MobListener implements Listener {
 					return;
 				}
 				((Tameable) entity).setOwner(null);
+				
+				if (entity instanceof Wolf) {
+					Wolf wolf = (Wolf) entity;
+					if (wolf.isSitting()) {
+						wolf.setSitting(false);
+					}
+				}
+				if (entity instanceof Ocelot) {
+					Ocelot ocelot = (Ocelot) entity;
+					if (ocelot.isSitting()) {
+						ocelot.setSitting(false);
+					}
+					ocelot.setCatType(Type.WILD_OCELOT);
+				}
 				p.sendMessage("§aYou have released this animal to the wild.");
 				releases.remove(p.getName());
 			}
