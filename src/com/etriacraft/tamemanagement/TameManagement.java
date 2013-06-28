@@ -9,8 +9,11 @@ import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class TameManagement extends JavaPlugin {
 	
@@ -24,12 +27,25 @@ public class TameManagement extends JavaPlugin {
 	
 	private final MobListener moblistener = new MobListener (this);
 	
+	public WorldGuardPlugin getWorldGuard() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
+	 
+	    // WorldGuard may not be loaded
+	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+	 
+	    return (WorldGuardPlugin) plugin;
+	}
+
+	
 	@Override
 	public void onEnable() {
 		instance = this;
 		this.log = this.getLogger();
 		
 		configFile = new File(getDataFolder(), "config.yml");
+		
 		
 		try {
 			firstRun();
@@ -49,6 +65,9 @@ public class TameManagement extends JavaPlugin {
 			metrics.start();
 		} catch (IOException e) {
 			// Failed to Submit Stats
+		}
+		if (getWorldGuard() != null) {
+			this.log.info("WorldGuard Detected and Hooked");
 		}
 	}
 	

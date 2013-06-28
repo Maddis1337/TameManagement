@@ -26,6 +26,7 @@ public class Commands {
 				if (args.length < 1) {
 					s.sendMessage("-----§6TameManagement Commands§f-----");
 					s.sendMessage("§3/tame setowner [Player]§f - Sets Owner of tamed animal.");
+					s.sendMessage("§3/tame release§f - Releases a tamed animal.");
 					s.sendMessage("§3/tame reload§f - Reload Config File.");
 					return true;
 				}
@@ -37,6 +38,26 @@ public class Commands {
 					plugin.reloadConfig();
 					s.sendMessage("§aTameManagement Config Reloaded.");
 				}
+				if (args[0].equalsIgnoreCase("release")) {
+					if (!plugin.getConfig().getBoolean("AllowReleases")) {
+						s.sendMessage("§cThis server does not allow animals to be released into the wild.");
+						return true;
+					}
+					if (!s.hasPermission("tamemanagement.release")) {
+						s.sendMessage("§cYou don't have permission to do that!");
+						return true;
+					}
+					if (args.length != 1) {
+						s.sendMessage("§3Proper Usage: §6/tame release");
+						return true;
+					}
+					if (MobListener.releases.containsKey(s.getName())) {
+						MobListener.releases.remove(s.getName());
+					}
+					MobListener.releases.put(s.getName(), "Release");
+					s.sendMessage("§aRight click the tamed mob that you would like to release.");
+					return true;
+				}
 				if (args[0].equalsIgnoreCase("setowner")) {
 					if (!plugin.getConfig().getBoolean("AllowTransfers")) {
 						s.sendMessage("§cThis server does not allow tamed animals to be transferred.");
@@ -47,7 +68,7 @@ public class Commands {
 						return true;
 					}
 					if (args.length != 2) {
-						s.sendMessage("§3Proper Usage: §6/setowner [Player]");
+						s.sendMessage("§3Proper Usage: §6/tame setowner [Player]");
 						return true;
 					}
 					Player p = Bukkit.getPlayer(args[1]);

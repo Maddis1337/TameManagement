@@ -2,3 +2,5 @@
 ProtectTames: true
 #If Allow Transfers is true, it will allow players with the appropriate permission to transfer their own tames.
 AllowTransfers: true
+#If AllowReleases is true, it will allow players with appropriate permission to release their own animals.
+AllowReleases: true
