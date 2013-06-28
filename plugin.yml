@@ -1,0 +1,6 @@
+name: TameManagement
+main: com.etriacraft.tamemanagement.TameManagement
+version: 1.0
+author: MistPhizzle
+commands:
+  tame:

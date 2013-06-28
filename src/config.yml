@@ -1,0 +1,4 @@
+#If ProtectTames is true, it will protect the tamed mobs of players from being damaged by players other than the owner.
+ProtectTames: true
+#If Allow Transfers is true, it will allow players with the appropriate permission to transfer their own tames.
+AllowTransfers: true
