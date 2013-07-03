@@ -9,11 +9,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class TameManagement extends JavaPlugin {
 	
@@ -54,6 +51,7 @@ public class TameManagement extends JavaPlugin {
 		} catch (IOException e) {
 			// Failed to Submit Stats
 		}
+		configCheck();
 	}
 	
 	public void firstRun() throws Exception {
@@ -101,6 +99,36 @@ public class TameManagement extends JavaPlugin {
 	
 	public void configReload() {
 		reloadConfig();
+	}
+	
+	public void configCheck() {
+		int ConfigVersion = getConfig().getInt("ConfigVersion");
+		if (ConfigVersion != 110) {
+			this.log.info("Config Outdated. Updating.");
+		}
+		if (!getConfig().contains("ProtectTames")) {
+			getConfig().set("ProtectTames", true);
+		}
+		if (!getConfig().contains("AllowTransfers")) {
+			getConfig().set("AllowTransfers", true);
+		}
+		if (!getConfig().contains("InvincibleHorses")) {
+			getConfig().set("InvincibleHorses", false);
+		}
+		if (!getConfig().contains("AllowReleases")) {
+			getConfig().set("AllowReleases", true);
+		}
+		if (!getConfig().contains("Breeding.Horse")) {
+			getConfig().set("Breeding.Horse", true);
+		}
+		if (!getConfig().contains("Breeding.Wolf")) {
+			getConfig().set("Breeding.Wolf", true);
+		}
+		if (!getConfig().contains("Breeding.Ocelot")) {
+			getConfig().set("Breeding.Ocelot", true);
+		}
+		getConfig().set("ConfigVersion", 110);
+		saveConfig();
 	}
 
 }

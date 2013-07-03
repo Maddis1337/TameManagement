@@ -1,14 +1,15 @@
+ConfigVersion:
 #If ProtectTames is true, it will protect the tamed mobs of players from being damaged by players other than the owner.
-ProtectTames: true
+ProtectTames:
 #If Allow Transfers is true, it will allow players with the appropriate permission to transfer their own tames.
-AllowTransfers: true
+AllowTransfers:
 #If AllowReleases is true, it will allow players with appropriate permission to release their own animals.
-AllowReleases: true
+AllowReleases:
 #If InvincibleHorses is true, all horses will be invincible. This is due to Bukkit not having an appropriate API as of now.
 #Players with the permission node (tamemanagement.invinciblehorses.override) can still harm horses.
-InvincibleHorses: false
+InvincibleHorses:
 #Toggling any of the Breeding Options to false will make it so players cannot breed that animal. (Tamed Animals Only)
 Breeding:
-  Horse: true
-  Wolf: true
-  Ocelot: true
+  Horse:
+  Wolf:
+  Ocelot: 
