@@ -7,3 +7,8 @@ AllowReleases: true
 #If InvincibleHorses is true, all horses will be invincible. This is due to Bukkit not having an appropriate API as of now.
 #Players with the permission node (tamemanagement.invinciblehorses.override) can still harm horses.
 InvincibleHorses: false
+#Toggling any of the Breeding Options to false will make it so players cannot breed that animal. (Tamed Animals Only)
+Breeding:
+  Horse: true
+  Wolf: true
+  Ocelot: true

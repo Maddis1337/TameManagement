@@ -16,6 +16,8 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
@@ -31,6 +33,27 @@ public class MobListener implements Listener {
 		this.plugin = instance;
 	}
 
+	@EventHandler
+	public void onCreatureSpawn(CreatureSpawnEvent e) {
+		if (e.getSpawnReason() == SpawnReason.BREEDING) {
+			Entity entity = e.getEntity();
+			if (entity instanceof Wolf) {
+				if (!plugin.getConfig().getBoolean("Breeding.Wolf")) {
+					e.setCancelled(true);
+				}
+			}
+			if (entity instanceof Ocelot) {
+				if (!plugin.getConfig().getBoolean("Breeding.Ocelot")) {
+					e.setCancelled(true);
+				}
+			}
+			if (entity instanceof CraftAnimals) {
+				if (!plugin.getConfig().getBoolean("Breeding.Horse")) {
+					e.setCancelled(true);
+				}
+			}
+		}
+	}
 	@EventHandler
 	public void EntityDamageEvent(EntityDamageByEntityEvent e) {
 		Entity damager = e.getDamager();
@@ -64,7 +87,7 @@ public class MobListener implements Listener {
 	public void PlayerInteract(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		Entity entity = e.getRightClicked();
-		if (entity instanceof Tameable | entity instanceof Horse) {
+		if (entity instanceof Tameable) {
 			AnimalTamer currentOwner = ((Tameable) entity).getOwner();
 
 			//			if (getInfo.containsKey(p.getName())) {
