@@ -38,6 +38,22 @@ public class Commands {
 					plugin.reloadConfig();
 					s.sendMessage("§aTameManagement Config Reloaded.");
 				}
+//				if (args[0].equalsIgnoreCase("getinfo")) {
+//					if (!s.hasPermission("tamemangement.getinfo")) {
+//						s.sendMessage("§cYou don't have permission to do that!");
+//						return true;
+//					}
+//					if (args.length != 1) {
+//						s.sendMessage("§3Proper Usage: §6/tame getinfo");
+//						return true;
+//					}
+//					if (MobListener.getInfo.containsKey(s.getName())) {
+//						MobListener.getInfo.remove(s.getName());
+//					}
+//					MobListener.getInfo.put(s.getName(),  "Release");
+//					s.sendMessage("§aRight click the tameable mob you would like to get info on.");
+//					return true;
+//				}
 				if (args[0].equalsIgnoreCase("release")) {
 					if (!plugin.getConfig().getBoolean("AllowReleases")) {
 						s.sendMessage("§cThis server does not allow animals to be released into the wild.");
