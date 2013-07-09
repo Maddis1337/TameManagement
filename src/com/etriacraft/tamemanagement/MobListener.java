@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftAnimals;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -13,6 +12,7 @@ import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,6 +37,7 @@ public class MobListener implements Listener {
 	public void onCreatureSpawn(CreatureSpawnEvent e) {
 		if (e.getSpawnReason() == SpawnReason.BREEDING) {
 			Entity entity = e.getEntity();
+			Horse horse = (Horse) entity;
 			if (entity instanceof Wolf) {
 				if (!plugin.getConfig().getBoolean("Breeding.Wolf")) {
 					e.setCancelled(true);
@@ -47,7 +48,7 @@ public class MobListener implements Listener {
 					e.setCancelled(true);
 				}
 			}
-			if (entity instanceof CraftAnimals) {
+			if (entity instanceof Horse) {
 				if (!plugin.getConfig().getBoolean("Breeding.Horse")) {
 					e.setCancelled(true);
 				}
@@ -61,7 +62,8 @@ public class MobListener implements Listener {
 
 		if (damager instanceof Player) {
 			Player p = (Player) damager;
-			if (damaged instanceof CraftAnimals) {
+			if (damaged instanceof Horse) {
+				Horse horse = (Horse) damaged;
 				if (plugin.getConfig().getBoolean("InvincibleHorses")) {
 					if (!p.hasPermission("tamemanagement.invinciblehorses.override")) {
 						p.sendMessage("§cYou are not allowed to harm horses.");
