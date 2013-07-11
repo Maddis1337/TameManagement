@@ -1,11 +1,24 @@
 package com.etriacraft.tamemanagement;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Wolf;
 
 public class Commands {
 
@@ -27,8 +40,72 @@ public class Commands {
 					s.sendMessage("-----§6TameManagement Commands§f-----");
 					s.sendMessage("§3/tame setowner [Player]§f - Sets Owner of tamed animal.");
 					s.sendMessage("§3/tame release§f - Releases a tamed animal.");
+					s.sendMessage("§3/tame invoke [Animal Type]§f - Invoke your tamed animals.");
 					s.sendMessage("§3/tame reload§f - Reload Config File.");
 					return true;
+				}
+				if (args[0].equalsIgnoreCase("invoke")) {
+					if (!s.hasPermission("tamemanagement.invoke")) {
+						s.sendMessage("§cYou don't have permission to do that.");
+						return true;
+					}
+					if (args.length != 2) {
+						s.sendMessage("§6Proper Usage: §3/tame invoke [Horse|Wolf|Ocelot]");
+						return true;
+					}
+					if (!args[1].equalsIgnoreCase("wolf") && !args[1].equalsIgnoreCase("horse") && !args[1].equalsIgnoreCase("ocelot")) {
+						s.sendMessage("§6Proper Usage: §3/tame invoke [Horse|Wolf|Ocelot]");
+						return true;
+					}
+					Set<Entity> calledEntities = new HashSet();
+					Player player = (Player) s;
+					Location loc = player.getLocation();
+					World world = player.getWorld();
+					List<Entity> entities = world.getEntities();
+					for (Entity en: entities) {
+						if (en instanceof Tameable) {
+							if (args[1].equalsIgnoreCase("Horse")) {
+								if (en instanceof Horse) {
+									Horse horse = (Horse) en;
+									if (horse.isTamed()) {
+										horse.teleport(loc);
+										calledEntities.add(en);
+									}
+								}
+							}
+							if (args[1].equalsIgnoreCase("Ocelot")) {
+								if (en instanceof Ocelot) {
+									Ocelot ocelot = (Ocelot) en;
+									if (ocelot.isTamed()) {
+										ocelot.teleport(loc);
+										calledEntities.add(en);
+									}
+								}
+							}
+							if (args[1].equalsIgnoreCase("Wolf")) {
+								if (en instanceof Wolf) {
+									Wolf wolf = (Wolf) en;
+									if (wolf.isTamed()) {
+										wolf.teleport(loc);
+										calledEntities.add(en);
+									}
+								}
+							}
+						}
+					}
+					int size = calledEntities.size();
+					if (args[1].equalsIgnoreCase("wolf")) {
+						s.sendMessage("§cYou have invoked §3" + size + " wolves.");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("ocelot")) {
+						s.sendMessage("§cYou have invoked §3" + size + " ocelots.");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("horse")) {
+						s.sendMessage("§cYou have invoked §3" + size + " horses.");
+						return true;
+					}
 				}
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (!s.hasPermission("tamemanagement.reload")) {
