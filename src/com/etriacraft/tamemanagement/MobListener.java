@@ -1,6 +1,8 @@
 package com.etriacraft.tamemanagement;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class MobListener implements Listener {
@@ -27,17 +30,15 @@ public class MobListener implements Listener {
 
 	public static HashMap<String, String> transfers = new HashMap();
 	public static HashMap<String, String> releases = new HashMap();
-	public static HashMap<String, String> getInfo = new HashMap();
+	public static Set<String> getInfo = new HashSet();
 
 	public MobListener(TameManagement instance) {
 		this.plugin = instance;
 	}
-
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent e) {
 		if (e.getSpawnReason() == SpawnReason.BREEDING) {
 			Entity entity = e.getEntity();
-			Horse horse = (Horse) entity;
 			if (entity instanceof Wolf) {
 				if (!plugin.getConfig().getBoolean("Breeding.Wolf")) {
 					e.setCancelled(true);
@@ -62,15 +63,6 @@ public class MobListener implements Listener {
 
 		if (damager instanceof Player) {
 			Player p = (Player) damager;
-			if (damaged instanceof Horse) {
-				Horse horse = (Horse) damaged;
-				if (plugin.getConfig().getBoolean("InvincibleHorses")) {
-					if (!p.hasPermission("tamemanagement.invinciblehorses.override")) {
-						p.sendMessage("§cYou are not allowed to harm horses.");
-						e.setCancelled(true);
-					}
-				}
-			}
 			if (damaged instanceof Tameable) {
 				if (((Tameable) damaged).isTamed()) {
 					AnimalTamer tameOwner = ((Tameable) damaged).getOwner();
@@ -91,55 +83,18 @@ public class MobListener implements Listener {
 		Entity entity = e.getRightClicked();
 		if (entity instanceof Tameable) {
 			AnimalTamer currentOwner = ((Tameable) entity).getOwner();
-
-			//			if (getInfo.containsKey(p.getName())) {
-			//				String animalName;
-			//				String type;
-			//				String owner = currentOwner.getName();
-			//				if (entity instanceof Wolf) {
-			//					Wolf wolf = (Wolf) entity;
-			//					type = "Wolf";
-			//					if (!wolf.getCustomName().equals(null)) {
-			//						animalName = wolf.getCustomName();
-			//					}
-			//					if (wolf.getCustomName().equals(null)) {
-			//						animalName = "None";
-			//					}
-			//					if (owner.equals(null)) {
-			//						owner = "None";
-			//					}	
-			//				}
-			//				if (entity instanceof Ocelot) {
-			//					Ocelot ocelot = (Ocelot) entity;
-			//					type = "Ocelot";
-			//					if (!ocelot.getCustomName().equals(null)) {
-			//						animalName = ocelot.getCustomName();
-			//					}
-			//					if (ocelot.getCustomName().equals(null)) {
-			//						animalName = "None";
-			//					}
-			//					if (owner.equals(null)) {
-			//						owner = "None";
-			//					}
-			//				}
-			//				if (entity instanceof Horse) {
-			//					Horse horse = (Horse) entity;
-			//					type = "Horse";
-			//					if (!horse.getCustomName().equals(null)) {
-			//						animalName = horse.getCustomName();
-			//					}
-			//					if (horse.getCustomName().equals(null)) {
-			//						animalName = "None";
-			//					}
-			//					if (owner.equals(null)) {
-			//						owner = "None";
-			//					}
-			//				}
-			//
-			//				p.sendMessage("§aAnimal Type:§6 " + type);
-			//				p.sendMessage("§aName§6 " + animalName);
-			//				p.sendMessage("§aOwner §6" + owner);
-			//			}
+			if (entity instanceof Horse) {
+				Horse horse = (Horse) entity;
+				if (plugin.getConfig().getBoolean("ProtectHorses")) {
+					if (horse.isTamed()) {
+						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
+							p.sendMessage("§cYou can't interact with a horse you do not own.");
+							e.setCancelled(true);
+						}
+					}
+				}
+			}
+			// This code runs on the /tame release command.
 			if (releases.containsKey(p.getName())) {
 				if (!p.getName().equals(currentOwner.getName())) {
 					p.sendMessage("§cYou do not own this animal.");
@@ -163,6 +118,8 @@ public class MobListener implements Listener {
 				e.setCancelled(true);
 				releases.remove(p.getName());
 			}
+			
+			// This code runs on /tame transfer.
 			if (transfers.containsKey(p.getName())) {
 				String newOwner = transfers.get(p.getName());
 				if (!p.getName().equals(currentOwner.getName())) {
