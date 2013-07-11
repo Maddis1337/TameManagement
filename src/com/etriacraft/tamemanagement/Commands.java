@@ -53,7 +53,51 @@ public class Commands {
 						s.sendMessage("§3/tame horse setvariant [Variant]§f - Change horse variant.");
 						return true;
 					}
-					
+					if (args[1].equalsIgnoreCase("setvariant")) {
+						if (!s.hasPermission("tamemanagement.horse.setvariant")) {
+							s.sendMessage("§cYou don't have permission to do that.");
+							return true;
+						}
+						// Donkey Horse Mule Skeleton Undead
+						if (args.length != 3) {
+							s.sendMessage("§6Proper Usage: §3/tame horse setvariant [variant]");
+							s.sendMessage("§aProper Variants: Horse, Donkey, Mule, Skeleton, Undead");
+							return true;
+						}
+						if (!args[2].equalsIgnoreCase("donkey") && !args[2].equalsIgnoreCase("horse") && !args[2].equalsIgnoreCase("mule") && !args[2].equalsIgnoreCase("skeleton") && !args[2].equalsIgnoreCase("undead")) {
+							s.sendMessage("§6Proper Usage: §3/tame horse setvariant [variant]");
+							s.sendMessage("§aProper Variants: Horse, Donkey, Mule, Skeleton, Undead");
+							return true;
+						}
+						if (MobListener.horsevariants.containsKey(s.getName())) {
+							MobListener.horsevariants.remove(s.getName());
+						}
+						if (args[2].equalsIgnoreCase("donkey")) {
+							MobListener.horsevariants.put(s.getName(), Horse.Variant.DONKEY);
+							s.sendMessage("§aRight click the tamed horse you would like to turn into a donkey.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("horse")) {
+							MobListener.horsevariants.put(s.getName(), Horse.Variant.HORSE);
+							s.sendMessage("§aRight click the tamed horse you would like to turn into a normal horse.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("mule")) {
+							MobListener.horsevariants.put(s.getName(), Horse.Variant.MULE);
+							s.sendMessage("§aRight click the tamed horse that you would like to turn into a mule.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("skeleton")) {
+							MobListener.horsevariants.put(s.getName(), Horse.Variant.SKELETON_HORSE);
+							s.sendMessage("§aRight click the tamed horse you would like to turn into a skeleton horse.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("undead")) {
+							MobListener.horsevariants.put(s.getName(), Horse.Variant.UNDEAD_HORSE);
+							s.sendMessage("§aRight click the tamed horse you would like to turn into an udnead horse.");
+							return true;
+						}
+					}
 					if (args[1].equalsIgnoreCase("setcolor")) {
 						if (!s.hasPermission("tamemanagement.horse.setcolor")) {
 							s.sendMessage("§cYou don't have permission to do that.");

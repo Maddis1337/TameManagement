@@ -117,6 +117,20 @@ public class MobListener implements Listener {
 						}
 					}
 				}
+				if (horsevariants.containsKey(p.getName())) {
+					if (horse.isTamed()) {
+						if (!currentOwner.getName().equals(p.getName())) {
+							p.sendMessage("§cYou can't change the variant of a horse you don't own.");
+							horsevariants.remove(p.getName());
+							e.setCancelled(true);
+						} else {
+							horse.setVariant(horsevariants.get(p.getName()));
+							p.sendMessage("§aHorse variation changed.");
+							e.setCancelled(true);
+							horsevariants.remove(p.getName());
+						}
+					}
+				}
 				if (plugin.getConfig().getBoolean("ProtectHorses")) {
 					if (horse.isTamed()) {
 						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
