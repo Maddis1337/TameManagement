@@ -30,6 +30,7 @@ public class MobListener implements Listener {
 
 	public static HashMap<String, String> transfers = new HashMap();
 	public static HashMap<String, String> releases = new HashMap();
+	public static HashMap<String, Horse.Style> horsestyles = new HashMap();
 	public static Set<String> getInfo = new HashSet();
 
 	public MobListener(TameManagement instance) {
@@ -85,6 +86,21 @@ public class MobListener implements Listener {
 			AnimalTamer currentOwner = ((Tameable) entity).getOwner();
 			if (entity instanceof Horse) {
 				Horse horse = (Horse) entity;
+				// Runs this code on the /tame horse setstyle command.
+				if (horsestyles.containsKey(p.getName())) {
+					if (horse.isTamed()) {
+						if (!currentOwner.getName().equals(p.getName())) {
+							p.sendMessage("§cYou can't change the style on a horse that you do not own.");
+							horsestyles.remove(p.getName());
+							e.setCancelled(true);
+						} else {
+							horse.setStyle(horsestyles.get(p.getName()));
+							p.sendMessage("§aHorse style changed.");
+							e.setCancelled(true);
+							horsestyles.remove(p.getName());
+						}
+					}
+				}
 				if (plugin.getConfig().getBoolean("ProtectHorses")) {
 					if (horse.isTamed()) {
 						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
@@ -93,7 +109,7 @@ public class MobListener implements Listener {
 						}
 					}
 				}
-			}
+			}		
 			// This code runs on the /tame release command.
 			if (releases.containsKey(p.getName())) {
 				if (!p.getName().equals(currentOwner.getName())) {
