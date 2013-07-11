@@ -53,6 +53,62 @@ public class Commands {
 						s.sendMessage("§3/tame horse setvariant [Variant]§f - Change horse variant.");
 						return true;
 					}
+					
+					if (args[1].equalsIgnoreCase("setcolor")) {
+						if (!s.hasPermission("tamemanagement.horse.setcolor")) {
+							s.sendMessage("§cYou don't have permission to do that.");
+							return true;
+						}
+						if (args.length != 3) {
+							// Black, Brown, Chestnut, Creamy,Darkbrown, Gray, White
+							s.sendMessage("§6Proper Usage: §3/tame horse setcolor [color]");
+							s.sendMessage("§aProper Styles: §3Black, Brown, Chestnut, Creamy, DarkBrown, Gray, White");
+							return true;
+						}
+						if (!args[2].equalsIgnoreCase("black") && !args[2].equalsIgnoreCase("brown") && !args[2].equalsIgnoreCase("chestnut") && !args[2].equalsIgnoreCase("creamy") && !args[2].equalsIgnoreCase("darkbrown") && !args[2].equalsIgnoreCase("gray") && !args[2].equalsIgnoreCase("white")) {
+							s.sendMessage("§6Proper Usage: §3/tame horse setcolor [color]");
+							s.sendMessage("§aProper Styles: §3Black, Brown, Chestnut, Creamy, DarkBrown, Gray, White");
+							return true;
+						}
+						if (MobListener.horsecolors.containsKey(s.getName())) {
+							MobListener.horsecolors.remove(s.getName());
+						}
+						if (args[2].equalsIgnoreCase("Black")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.BLACK);
+							s.sendMessage("§aRight click the horse that you would like to turn black.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("brown")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.BROWN);
+							s.sendMessage("§aRight click the horse that you would like to turn brown.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("chestnut")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.CHESTNUT);
+							s.sendMessage("§aRight click the horse that you would like to turn chestnut.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("creamy")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.CREAMY);
+							s.sendMessage("§aRight click the horse that you would like to turn a creamy color.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("darkbrown")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.DARK_BROWN);
+							s.sendMessage("§aRight click the horse that you would like to turn dark brown.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("gray")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.GRAY);
+							s.sendMessage("§aRight click the horse that you would like to turn gray.");
+							return true;
+						}
+						if (args[2].equalsIgnoreCase("white")) {
+							MobListener.horsecolors.put(s.getName(), Horse.Color.WHITE);
+							s.sendMessage("§aRight click the horse that you would like to turn white.");
+							return true;
+						}
+					}
 					if (args[1].equalsIgnoreCase("setstyle")) {
 						if (!s.hasPermission("tamemanagement.horse.setstyle")) {
 							s.sendMessage("§cYou don't have permission to do that.");

@@ -31,6 +31,8 @@ public class MobListener implements Listener {
 	public static HashMap<String, String> transfers = new HashMap();
 	public static HashMap<String, String> releases = new HashMap();
 	public static HashMap<String, Horse.Style> horsestyles = new HashMap();
+	public static HashMap<String, Horse.Color> horsecolors = new HashMap(); 
+	public static HashMap<String, Horse.Variant> horsevariants = new HashMap();
 	public static Set<String> getInfo = new HashSet();
 
 	public MobListener(TameManagement instance) {
@@ -98,6 +100,20 @@ public class MobListener implements Listener {
 							p.sendMessage("§aHorse style changed.");
 							e.setCancelled(true);
 							horsestyles.remove(p.getName());
+						}
+					}
+				}
+				if (horsecolors.containsKey(p.getName())) {
+					if (horse.isTamed()) {
+						if (!currentOwner.getName().equals(p.getName())) {
+							p.sendMessage("§cYou can't change the color of a horse you don't own.");
+							horsecolors.remove(p.getName());
+							e.setCancelled(true);
+						} else {
+							horse.setColor(horsecolors.get(p.getName()));
+							p.sendMessage("§aHorse color changed.");
+							e.setCancelled(true);
+							horsecolors.remove(p.getName());
 						}
 					}
 				}
