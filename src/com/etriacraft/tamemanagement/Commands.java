@@ -122,8 +122,10 @@ public class Commands {
 								if (en instanceof Horse) {
 									Horse horse = (Horse) en;
 									if (horse.isTamed()) {
-										horse.teleport(loc);
-										calledEntities.add(en);
+										if (horse.getOwner().getName().equals(s.getName())) {
+											horse.teleport(loc);
+											calledEntities.add(en);
+										}
 									}
 								}
 							}
@@ -131,8 +133,10 @@ public class Commands {
 								if (en instanceof Ocelot) {
 									Ocelot ocelot = (Ocelot) en;
 									if (ocelot.isTamed()) {
-										ocelot.teleport(loc);
-										calledEntities.add(en);
+										if (ocelot.getOwner().getName().equals(s.getName())) {
+											ocelot.teleport(loc);
+											calledEntities.add(en);
+										}
 									}
 								}
 							}
@@ -140,8 +144,10 @@ public class Commands {
 								if (en instanceof Wolf) {
 									Wolf wolf = (Wolf) en;
 									if (wolf.isTamed()) {
-										wolf.teleport(loc);
-										calledEntities.add(en);
+										if (wolf.getOwner().getName().equals(s.getName())) {
+											wolf.teleport(loc);
+											calledEntities.add(en);
+										}
 									}
 								}
 							}
