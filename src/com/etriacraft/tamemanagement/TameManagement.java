@@ -103,7 +103,7 @@ public class TameManagement extends JavaPlugin {
 
 	public void configCheck() {
 		int ConfigVersion = getConfig().getInt("ConfigVersion");
-		if (ConfigVersion != 110) {
+		if (ConfigVersion != 120) {
 			this.log.info("Config Outdated. Updating.");
 			if (!getConfig().contains("ProtectTames")) {
 				getConfig().set("ProtectTames", true);
@@ -126,7 +126,7 @@ public class TameManagement extends JavaPlugin {
 			if (!getConfig().contains("Breeding.Ocelot")) {
 				getConfig().set("Breeding.Ocelot", true);
 			}
-			getConfig().set("ConfigVersion", 110);
+			getConfig().set("ConfigVersion", 120);
 			saveConfig();
 		}
 	}
