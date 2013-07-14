@@ -46,9 +46,22 @@ public class Commands {
 				if (args[0].equalsIgnoreCase("horse")) {
 					if (args.length == 1) {
 						s.sendMessage("-----§6TameManagement Horse Commands§f-----");
+						s.sendMessage("§3/tame horse claim§f - Claim a horse.");
 						s.sendMessage("§3/tame horse setstyle [Style]§f  - Change Horse Type.");
 						s.sendMessage("§3/tame horse setcolor [Color]§f - Change Horse Color.");
 						s.sendMessage("§3/tame horse setvariant [Variant]§f - Change horse variant.");
+						return true;
+					}
+					if (args[1].equalsIgnoreCase("claim")) {
+						if (!s.hasPermission("tamemanagement.horse.claim")) {
+							s.sendMessage("§cYou don't have permission to do that.");
+							return true;
+						}
+						if (MobListener.horseclaims.contains(s.getName())) {
+							MobListener.horseclaims.remove(s.getName());
+						}
+						MobListener.horseclaims.add(s.getName());
+						s.sendMessage("§aRight Click the horse that you would like to claim.");
 						return true;
 					}
 					if (args[1].equalsIgnoreCase("setvariant")) {
@@ -220,6 +233,9 @@ public class Commands {
 								if (en instanceof Horse) {
 									Horse horse = (Horse) en;
 									if (horse.isTamed()) {
+										if (horse.getOwner() == null) {
+											continue;
+										}
 										if (horse.getOwner().getName().equals(s.getName())) {
 											horse.teleport(loc);
 											calledEntities.add(en);

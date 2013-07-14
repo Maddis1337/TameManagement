@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftHorse;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Color;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
@@ -19,6 +22,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 public class MobListener implements Listener {
 
@@ -29,6 +34,7 @@ public class MobListener implements Listener {
 	public static HashMap<String, Horse.Style> horsestyles = new HashMap();
 	public static HashMap<String, Horse.Color> horsecolors = new HashMap(); 
 	public static HashMap<String, Horse.Variant> horsevariants = new HashMap();
+	public static Set<String> horseclaims = new HashSet();
 	public static Set<String> getInfo = new HashSet();
 
 	public MobListener(TameManagement instance) {
@@ -76,6 +82,7 @@ public class MobListener implements Listener {
 			}
 		}
 	}
+
 	@EventHandler
 	public void PlayerInteract(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
@@ -84,7 +91,24 @@ public class MobListener implements Listener {
 			AnimalTamer currentOwner = ((Tameable) entity).getOwner();
 			if (entity instanceof Horse) {
 				Horse horse = (Horse) entity;
+				if (horseclaims.contains(p.getName())) {
+					if(horse.getOwner() == null) {
+						horse.setOwner(p);
+						horseclaims.remove(p.getName());
+					} else {
+						p.sendMessage("§cThis horse is already owned.");
+					}
+				}
 				// Runs this code on the /tame horse setstyle command.
+				if (plugin.getConfig().getBoolean("ProtectHorses")) {
+					if (horse.isTamed()) {
+						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
+							p.sendMessage("§cYou can't interact with a horse you do not own.");
+							e.setCancelled(true);
+						}
+					}
+				}
+
 				if (horsestyles.containsKey(p.getName())) {
 					if (horse.isTamed()) {
 						if (!currentOwner.getName().equals(p.getName())) {
@@ -127,14 +151,7 @@ public class MobListener implements Listener {
 						}
 					}
 				}
-				if (plugin.getConfig().getBoolean("ProtectHorses")) {
-					if (horse.isTamed()) {
-						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
-							p.sendMessage("§cYou can't interact with a horse you do not own.");
-							e.setCancelled(true);
-						}
-					}
-				}
+
 			}		
 			// This code runs on the /tame release command.
 			if (releases.containsKey(p.getName())) {
@@ -160,7 +177,7 @@ public class MobListener implements Listener {
 				e.setCancelled(true);
 				releases.remove(p.getName());
 			}
-			
+
 			// This code runs on /tame transfer.
 			if (transfers.containsKey(p.getName())) {
 				String newOwner = transfers.get(p.getName());
