@@ -95,8 +95,10 @@ public class MobListener implements Listener {
 					if(horse.getOwner() == null) {
 						horse.setOwner(p);
 						horseclaims.remove(p.getName());
+						e.setCancelled(true);
 					} else {
 						p.sendMessage("§cThis horse is already owned.");
+						e.setCancelled(true);
 					}
 				}
 				// Runs this code on the /tame horse setstyle command.
