@@ -98,12 +98,16 @@ public class MobListener implements Listener {
 						e.setCancelled(true);
 					} else {
 						p.sendMessage("§cThis horse is already owned.");
+						horseclaims.remove(p.getName());
 						e.setCancelled(true);
 					}
 				}
 				// Runs this code on the /tame horse setstyle command.
 				if (plugin.getConfig().getBoolean("ProtectHorses")) {
 					if (horse.isTamed()) {
+						if (currentOwner == null) {
+							e.setCancelled(false);
+						}
 						if (!currentOwner.getName().equals(p.getName()) && !p.hasPermission("tamemanagement.protecthorses.override")) {
 							p.sendMessage("§cYou can't interact with a horse you do not own.");
 							e.setCancelled(true);
