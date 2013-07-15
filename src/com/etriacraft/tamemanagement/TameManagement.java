@@ -1,14 +1,10 @@
 package com.etriacraft.tamemanagement;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,9 +13,6 @@ public class TameManagement extends JavaPlugin {
 	protected static Logger log;
 	public static TameManagement instance;
 
-	File configFile;
-	FileConfiguration config;
-
 	Commands cmd;
 
 	private final MobListener moblistener = new MobListener (this);
@@ -27,18 +20,10 @@ public class TameManagement extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.log = this.getLogger();
+		TameManagement.log = this.getLogger();
 
-		configFile = new File(getDataFolder(), "config.yml");
+		configCheck(); // this does everything automatically
 
-
-		try {
-			firstRun();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		config = new YamlConfiguration();
 
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(moblistener, this);
@@ -51,46 +36,6 @@ public class TameManagement extends JavaPlugin {
 		} catch (IOException e) {
 			// Failed to Submit Stats
 		}
-		configCheck();
-	}
-
-	public void firstRun() throws Exception {
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			copy(getResource("config.yml"), configFile);
-			log.info("Config not found. Generating.");
-		}
-	}
-
-	private void loadYamls() {
-		try {
-			config.load(configFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void copy (InputStream in, File file) {
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf))>0) {
-				out.write(buf,0,len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void saveYamls() {
-		try {
-			config.save(configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static TameManagement getInstance() {
@@ -100,35 +45,48 @@ public class TameManagement extends JavaPlugin {
 	public void configReload() {
 		reloadConfig();
 	}
+	
+	public void sendMessage(Player p, String messageKey){
+		sendMessage(p, messageKey, null);
+	}
+	
+	public void sendMessage(Player p, String messageKey, String data){
+		
+		String message = getConfig().getString("messages."+messageKey);
+		if(message == null){
+			getLogger().warning("Missing text in config! Unknown: "+messageKey);
+			return;
+		}
+		if(data != null) message = String.format(message, data);
+		p.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+	}
 
 	public void configCheck() {
-		int ConfigVersion = getConfig().getInt("ConfigVersion");
-		if (ConfigVersion != 120) {
-			this.log.info("Config Outdated. Updating.");
-			if (!getConfig().contains("ProtectTames")) {
-				getConfig().set("ProtectTames", true);
-			}
-			if (!getConfig().contains("AllowTransfers")) {
-				getConfig().set("AllowTransfers", true);
-			}
-			if (!getConfig().contains("AllowReleases")) {
-				getConfig().set("AllowReleases", true);
-			}
-			if (!getConfig().contains("ProtectHorses")) {
-				getConfig().set("ProtectHorses", true);
-			}
-			if (!getConfig().contains("Breeding.Horse")) {
-				getConfig().set("Breeding.Horse", true);
-			}
-			if (!getConfig().contains("Breeding.Wolf")) {
-				getConfig().set("Breeding.Wolf", true);
-			}
-			if (!getConfig().contains("Breeding.Ocelot")) {
-				getConfig().set("Breeding.Ocelot", true);
-			}
-			getConfig().set("ConfigVersion", 120);
-			saveConfig();
-		}
+		getConfig().addDefault("ProtectTames", true);
+		getConfig().addDefault("AllowTransfers", true);
+		getConfig().addDefault("AllowReleases", true);
+		getConfig().addDefault("ProtectHorses", true);
+		getConfig().addDefault("Breeding.Horse", true);
+		getConfig().addDefault("Breeding.Wolf", true);
+		getConfig().addDefault("Breeding.Ocelot", true);
+		
+		getConfig().addDefault("messages.listener.animalDoesNotBelongToYou", "&cYou can't damage an animal that doesn't belong to you.");
+		getConfig().addDefault("messages.listener.horseAlreadyOwned", "This horse is already owned.");
+		getConfig().addDefault("messages.listener.cantInteractWithHorse", "&cYou can't interact with a horse you do not own.");
+		getConfig().addDefault("messages.listener.cantChangeStyle", "You can't change the style on a horse that you do not own.");
+		getConfig().addDefault("messages.listener.styleChanged", "&aHorse style changed.");
+		getConfig().addDefault("messages.listener.cantChangeColor", "&cYou can't change the color of a horse you don't own.");
+		getConfig().addDefault("messages.listener.colorChanged", "&aHorse color changed.");
+		getConfig().addDefault("messages.listener.cantChangeVariant", "&cYou can't change the variant of a horse you don't own.");
+		getConfig().addDefault("messages.listener.changedVariant", "&aHorse variation changed.");
+		getConfig().addDefault("messages.listener.doesNotOwn", "&cYou do not own this animal.");
+		getConfig().addDefault("messages.listener.animalReleased", "&aYou have released this animal to the wild.");
+		getConfig().addDefault("messages.listener.animalTransfered", "&aYou have transferred this animal to %s");
+		
+//		getConfig().set("ConfigVersion", 120); no longer needed
+		getConfig().options().copyDefaults(true);
+		
+		saveConfig();
 	}
 
 }
